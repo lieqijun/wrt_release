@@ -36,6 +36,9 @@ on:
         description: Remove default config fragments, comma separated
         default: ""
 
+permissions:
+  contents: write
+
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -182,3 +185,10 @@ jobs:
         with:
           name: ${{ env.BUILD_DATE }}_${{ inputs.model }}
           path: ./firmware/*.*
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.BUILD_DATE }}_${{ inputs.model }}
+          name: ${{ env.BUILD_DATE }}_${{ inputs.model }}
+          files: ./firmware/*.*
