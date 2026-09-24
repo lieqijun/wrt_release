@@ -439,6 +439,10 @@ remove_uhttpd_dependency
 cd "$BASE_PATH/../$BUILD_DIR"
 make defconfig
 
+# --- 兜底：强制禁用所有 USB 模块，防止 defconfig 拉回 ---
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-ehci|usb-ohci|usb-uhci|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial|usb-serial-option|usb-serial-wwan|mhi|qrtr|qrtr-mhi)=.*/# CONFIG_PACKAGE_kmod-& is not set/' .config
+# --- 兜底结束 ---
+
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
     DISTFEEDS_PATH="$BASE_PATH/../$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
     if [ -d "${DISTFEEDS_PATH%/*}" ] && [ -f "$DISTFEEDS_PATH" ]; then
