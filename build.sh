@@ -439,9 +439,16 @@ remove_uhttpd_dependency
 cd "$BASE_PATH/../$BUILD_DIR"
 make defconfig
 
-# --- 兜底：强制禁用所有 USB 模块，防止 defconfig 拉回 ---
-sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial-option|usb-serial-wwan|usb-dwc3-qcom|usb-dwc3|usb-roles|usb-serial-qualcomm)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
-#sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial|usb-serial-option|usb-serial-wwan)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+# --- 兜底：强制禁用所有 USB 模块（主干/存储/网卡），防止 defconfig 拉回 ---
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-dwc3-qcom|usb-dwc3|usb-roles)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+# --- 兜底：禁用 USB 转串口框架及所有子模块（AX6 无 USB 串口设备） ---
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-serial|usb-serial-option|usb-serial-wwan|usb-serial-qualcomm|usb-serial-ftdi|usb-serial-ch341|usb-acm)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+# --- 兜底：禁用外接存储文件系统（AX6本机使用ubifs，不需要ext4/f2fs） ---
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+# --- 兜底：禁用WireGuard及其配套lib加密模块（不使用WireGuard时启用） ---
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+# 禁用 PPTP / L2TP / GRE 及其依赖（家用基本用不到）
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(pptp|l2tp|gre)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
