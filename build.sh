@@ -447,8 +447,6 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-serial|usb-serial-option|usb-serial-wwan|
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底：禁用WireGuard及其配套lib加密模块（不使用WireGuard时启用） ---
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
-# 禁用 PPTP / L2TP / GRE 及其依赖（家用基本用不到）
-sed -i -E 's/^CONFIG_PACKAGE_kmod-(pptp|l2tp|gre)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
