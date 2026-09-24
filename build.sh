@@ -440,7 +440,8 @@ cd "$BASE_PATH/../$BUILD_DIR"
 make defconfig
 
 # --- 兜底：强制禁用所有 USB 模块，防止 defconfig 拉回 ---
-sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial|usb-serial-option|usb-serial-wwan)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial-option|usb-serial-wwan|usb-dwc3-qcom|usb-dwc3|usb-roles|usb-serial-qualcomm)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
+#sed -i -E 's/^CONFIG_PACKAGE_kmod-(usb-core|usb-common|usb2|usb3|usb-xhci-hcd|usb-storage|usb-storage-extras|usb-storage-uas|scsi-core|usb-net|usb-net-rndis|usb-net-cdc-ether|usb-net-cdc-ncm|usb-serial|usb-serial-option|usb-serial-wwan)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
