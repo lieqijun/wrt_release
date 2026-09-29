@@ -461,7 +461,7 @@ find ./build_dir -path "*qca-nss*" -name "*.h" 2>/dev/null | head -n 60 || true
 echo "================================================"
 
 echo "===== 单独编译 lanspeed-nss-control，抓真实报错 ====="
-make package/feeds/lanspeed/net/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed.log || true
+make package/feeds/lanspeed/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed.log || true
 echo "--- 真实报错 ---"
 grep -E "error:|fatal error:|undefined reference|No such file|nss_" /tmp/lanspeed.log | tail -n 80 || true
 echo "===================================================="
