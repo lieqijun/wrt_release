@@ -466,6 +466,12 @@ echo "--- build_dir 里的 NSS 头文件 ---"
 find ./build_dir -path "*qca-nss*" -name "*.h" 2>/dev/null | head -n 60 || true
 echo "================================================"
 
+echo "===== 查找 nss_api_if.h 的真实位置 ====="
+find ./build_dir -path "*qca-nss*" -name "nss_api_if.h" 2>/dev/null || echo "build_dir 的 qca-nss 里没找到"
+find ./build_dir -path "*linux-qualcommax*" -name "nss_api_if.h" 2>/dev/null || echo "build_dir 的 linux-qualcommax 里没找到"
+find ./staging_dir -name "nss_api_if.h" 2>/dev/null || echo "staging_dir 里没找到"
+echo "========================================"
+
 echo "===== 单独编译 lanspeed-nss-control，抓真实报错 ====="
 make package/feeds/lanspeed/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed.log || true
 echo "--- 真实报错 ---"
