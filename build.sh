@@ -449,9 +449,15 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
-# ==== 单独编译 NSS 驱动和 lanspeed，抓真实报错 ====
+# ==== 先编译内核，生成内核 .config ====
 cd "$BASE_PATH/../$BUILD_DIR"
+echo "===== 先编译内核，生成内核 .config ====="
+make target/linux/compile V=s 2>&1 | tail -n 20 || true
+echo "--- 检查内核 .config 是否生成 ---"
+ls -la ./build_dir/target-aarch64_cortex-a53_musl/linux-qualcommax_ipq807x/linux-6.18.52/.config 2>/dev/null || echo "内核 .config 仍然不存在"
+echo "========================================"
 
+# ==== 单独编译 NSS 驱动和 lanspeed，抓真实报错 ====
 echo "===== 编译 qca-nss-drv 并列出导出的 NSS 头文件 ====="
 make package/qca-nss/qca-nss-drv/compile V=s 2>&1 | tail -n 20 || true
 echo "--- staging_dir 里的 NSS 头文件 ---"
