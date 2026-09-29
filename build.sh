@@ -449,19 +449,6 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
-# 确保内核 .config 先生成
-echo "===== 预编译内核，生成 .config ====="
-make target/linux/compile V=s 2>&1 | tail -n 20 || true
-echo "========================================"
-
-LANSPEED_MAKEFILE="./feeds/lanspeed/net/lanspeed-nss-control/Makefile"
-if [ -f "$LANSPEED_MAKEFILE" ]; then
-    sed -i '/^EXTRA_CFLAGS:=/a EXTRA_CFLAGS+= -I$(TOPDIR)/staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv' "$LANSPEED_MAKEFILE"
-    echo "已在 lanspeed Makefile 追加 EXTRA_CFLAGS"
-fi
-
-# ... 后面直接进正式编译 ...
-
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
     DISTFEEDS_PATH="$BASE_PATH/../$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
     if [ -d "${DISTFEEDS_PATH%/*}" ] && [ -f "$DISTFEEDS_PATH" ]; then
