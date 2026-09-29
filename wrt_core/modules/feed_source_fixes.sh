@@ -233,12 +233,6 @@ fix_quickstart() {
 }
 
 
-update_oaf_deconfig() {
-    # OAF 已从项目中移除，保留空函数避免调用报错
-    return 0
-}
-
-
 fix_easytier_mk() {
     local mk_path="$(get_custom_feed_worktree_dir)/luci-app-easytier/easytier/Makefile"
     if [ -f "$mk_path" ]; then
