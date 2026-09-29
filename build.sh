@@ -449,6 +449,26 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
+# ==== 单独编译 NSS 驱动和 lanspeed，抓真实报错 ====
+cd "$BASE_PATH/../$BUILD_DIR"
+
+echo "===== 编译 qca-nss-drv 并列出导出的 NSS 头文件 ====="
+make package/qca-nss/qca-nss-drv/compile V=s 2>&1 | tail -n 20 || true
+echo "--- staging_dir 里的 NSS 头文件 ---"
+find ./staging_dir -path "*nss*" -name "*.h" 2>/dev/null | head -n 60 || true
+echo "--- build_dir 里的 NSS 头文件 ---"
+find ./build_dir -path "*qca-nss*" -name "*.h" 2>/dev/null | head -n 60 || true
+echo "================================================"
+
+echo "===== 单独编译 lanspeed-nss-control，抓真实报错 ====="
+make package/feeds/lanspeed/net/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed.log || true
+echo "--- 真实报错 ---"
+grep -E "error:|fatal error:|undefined reference|No such file|nss_" /tmp/lanspeed.log | tail -n 80 || true
+echo "===================================================="
+
+cd - >/dev/null
+# ==== 结束 ====
+
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
     DISTFEEDS_PATH="$BASE_PATH/../$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
     if [ -d "${DISTFEEDS_PATH%/*}" ] && [ -f "$DISTFEEDS_PATH" ]; then
