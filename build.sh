@@ -456,9 +456,8 @@ echo "========================================"
 
 LANSPEED_MAKEFILE="./feeds/lanspeed/net/lanspeed-nss-control/Makefile"
 if [ -f "$LANSPEED_MAKEFILE" ]; then
-    # 在 EXTRA_CFLAGS 后面追加硬编码路径
-    sed -i 's|^EXTRA_CFLAGS:=.*|EXTRA_CFLAGS:= -I$(TOPDIR)/staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv|' "$LANSPEED_MAKEFILE"
-    echo "已重写 lanspeed Makefile 的 EXTRA_CFLAGS"
+    sed -i '/^EXTRA_CFLAGS:=/a EXTRA_CFLAGS+= -I$(TOPDIR)/staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv' "$LANSPEED_MAKEFILE"
+    echo "已在 lanspeed Makefile 追加 EXTRA_CFLAGS"
 fi
 
 # ... 后面直接进正式编译 ...
