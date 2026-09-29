@@ -1,4 +1,4 @@
-红米ax6 ImmortalWrt 精简带nss加速 保留oaf行为管理
+红米ax6 ImmortalWrt 精简带nss加速 移除oaf行为管理 使用lanspeed监控网速
 
 # 编译指南
 
