@@ -43,14 +43,6 @@ echo $REPO_URL $REPO_BRANCH
 echo "$REPO_URL/$REPO_BRANCH" >"$BASE_PATH/../repo_flag"
 git_retry clone --depth 1 -b "$REPO_BRANCH" "$REPO_URL" "$BUILD_DIR"
 
-# ===== 加入 lanspeed feed =====
-echo "src-git lanspeed https://github.com/qimaoww/luci-app-lanspeed.git" >> "$BUILD_DIR/feeds.conf.default"
-cd "$BUILD_DIR"
-./scripts/feeds update lanspeed
-./scripts/feeds install -a -p lanspeed
-cd - >/dev/null
-# ===== lanspeed feed end =====
-
 # GitHub Action 移除国内下载源
 PROJECT_MIRRORS_FILE="$BUILD_DIR/scripts/projectsmirrors.json"
 
