@@ -449,37 +449,15 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
-# ==== 先编译内核，生成内核 .config ====
-cd "$BASE_PATH/../$BUILD_DIR"
-echo "===== 先编译内核，生成内核 .config ====="
+# 确保内核 .config 先生成
+echo "===== 预编译内核，生成 .config ====="
 make target/linux/compile V=s 2>&1 | tail -n 20 || true
-echo "--- 检查内核 .config 是否生成 ---"
-ls -la ./build_dir/target-aarch64_cortex-a53_musl/linux-qualcommax_ipq807x/linux-6.18.52/.config 2>/dev/null || echo "内核 .config 仍然不存在"
 echo "========================================"
 
-# ==== 单独编译 NSS 驱动和 lanspeed，抓真实报错 ====
-echo "===== 编译 qca-nss-drv 并列出导出的 NSS 头文件 ====="
-make package/qca-nss/qca-nss-drv/compile V=s 2>&1 | tail -n 20 || true
-echo "--- staging_dir 里的 NSS 头文件 ---"
-find ./staging_dir -path "*nss*" -name "*.h" 2>/dev/null | head -n 60 || true
-echo "--- build_dir 里的 NSS 头文件 ---"
-find ./build_dir -path "*qca-nss*" -name "*.h" 2>/dev/null | head -n 60 || true
-echo "================================================"
+echo "STAGING_DIR=$STAGING_DIR"
+ls -la ./staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv/nss_api_if.h
 
-echo "===== 查找 nss_api_if.h 的真实位置 ====="
-find ./build_dir -path "*qca-nss*" -name "nss_api_if.h" 2>/dev/null || echo "build_dir 的 qca-nss 里没找到"
-find ./build_dir -path "*linux-qualcommax*" -name "nss_api_if.h" 2>/dev/null || echo "build_dir 的 linux-qualcommax 里没找到"
-find ./staging_dir -name "nss_api_if.h" 2>/dev/null || echo "staging_dir 里没找到"
-echo "========================================"
-
-echo "===== 单独编译 lanspeed-nss-control，抓真实报错 ====="
-make package/feeds/lanspeed/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed.log || true
-echo "--- 真实报错 ---"
-grep -E "error:|fatal error:|undefined reference|No such file|nss_" /tmp/lanspeed.log | tail -n 80 || true
-echo "===================================================="
-
-cd - >/dev/null
-# ==== 结束 ====
+# ... 后面直接进正式编译 ...
 
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
     DISTFEEDS_PATH="$BASE_PATH/../$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
