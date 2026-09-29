@@ -454,8 +454,12 @@ echo "===== 预编译内核，生成 .config ====="
 make target/linux/compile V=s 2>&1 | tail -n 20 || true
 echo "========================================"
 
-echo "STAGING_DIR=$STAGING_DIR"
-ls -la ./staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv/nss_api_if.h
+LANSPEED_MAKEFILE="./feeds/lanspeed/net/lanspeed-nss-control/Makefile"
+if [ -f "$LANSPEED_MAKEFILE" ]; then
+    # 在 EXTRA_CFLAGS 后面追加硬编码路径
+    sed -i 's|^EXTRA_CFLAGS:=.*|EXTRA_CFLAGS:= -I$(TOPDIR)/staging_dir/target-aarch64_cortex-a53_musl/usr/include/qca-nss-drv|' "$LANSPEED_MAKEFILE"
+    echo "已重写 lanspeed Makefile 的 EXTRA_CFLAGS"
+fi
 
 # ... 后面直接进正式编译 ...
 
