@@ -449,13 +449,6 @@ sed -i -E 's/^CONFIG_PACKAGE_kmod-(fs-ext4|fs-f2fs)=.*/# CONFIG_PACKAGE_kmod-\1 
 sed -i -E 's/^CONFIG_PACKAGE_kmod-(wireguard|crypto-lib-curve25519|crypto-lib-chacha20|crypto-lib-chacha20poly1305|crypto-lib-poly1305)=.*/# CONFIG_PACKAGE_kmod-\1 is not set/' .config
 # --- 兜底结束 ---
 
-# --- 单独编译 lanspeed-nss-control，打印完整报错 ---
-make package/feeds/lanspeed/lanspeed-nss-control/compile V=s 2>&1 | tee /tmp/lanspeed-nss-build.log || true
-echo "========== lanspeed-nss-control build log (tail) =========="
-tail -n 100 /tmp/lanspeed-nss-build.log || true
-echo "=========================================================="
-# --- lanspeed 单独编译结束 ---
-
 if grep -qE "^CONFIG_TARGET_x86_64=y" "$CONFIG_FILE"; then
     DISTFEEDS_PATH="$BASE_PATH/../$BUILD_DIR/package/emortal/default-settings/files/99-distfeeds.conf"
     if [ -d "${DISTFEEDS_PATH%/*}" ] && [ -f "$DISTFEEDS_PATH" ]; then
