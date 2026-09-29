@@ -1,5 +1,3 @@
-红米ax6 ImmortalWrt 精简带nss加速 移除oaf行为管理 使用lanspeed监控网速
-
 # 编译指南
 
 本仓库用于按设备配置自动拉取 OpenWrt / ImmortalWrt / LiBwrt 源码、应用自定义补丁与软件包配置，并输出固件到 `firmware/` 目录。
